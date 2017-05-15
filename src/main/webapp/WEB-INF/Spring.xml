@@ -25,15 +25,15 @@
     <s:jdbc-user-service data-source-ref="dataSource"
 
                          users-by-username-query="
-         SELECT userName, password, CASE enabled WHEN 0 THEN FALSE ELSE TRUE END 'enabled'
+         SELECT login, password, CASE isBlocked WHEN 1 THEN FALSE ELSE TRUE END 'isBlocked'
          FROM `user`
-         WHERE userName=?;"
+         WHERE login=?;"
 
                          authorities-by-username-query="
-        SELECT u.userName, r.roles
+        SELECT u.login, r.role
         FROM user u, user_roles r
-        WHERE u.userName=?
-        AND u.userName=r.login;"
+        WHERE u.login=?
+        AND u.login=r.username;"
 
     />
 

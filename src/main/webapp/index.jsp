@@ -4,13 +4,13 @@
 <br>
 login: user
 <br>
-password: pass
- <a href="user.jsp">Страница пользователя</a>
+password: pass<br>
+ <a href="user.jsp">User page</a>
 <br>
 
 <br>
 <br>
- <a href="admin.jsp">Страница админа</a>
+ <a href="admin.jsp">Admin page</a>
 <br>
 login: admin
 <br>
