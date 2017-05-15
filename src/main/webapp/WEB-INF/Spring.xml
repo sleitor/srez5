@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:s="http://www.springframework.org/schema/security"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/security
+	   http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <s:global-method-security secured-annotations="enabled"/>
+    <!--<s:global-method-security pre-post-annotations="enabled" />-->
+
+    <s:http auto-config="true">
+        <s:intercept-url pattern="/admin.jsp" access="hasRole('ADMIN')"/>
+        <s:intercept-url pattern="/user.jsp" access="hasRole('USER')"/>
+        <s:intercept-url pattern="/" access="hasRole('USER')"/>
+        <s:form-login
+                authentication-success-handler-ref="roleBasedAuthenticationSuccessHandler" />
+        <s:logout logout-success-url="/catalog"/>
+        <s:remember-me/>
+    </s:http>
+
+    <bean id="roleBasedAuthenticationSuccessHandler"
+          class="main.controller.handlers.AuthentificationHandler"/>
+    <s:jdbc-user-service data-source-ref="dataSource"
+
+                         users-by-username-query="
+         SELECT userName, password, CASE enabled WHEN 0 THEN FALSE ELSE TRUE END 'enabled'
+         FROM `user`
+         WHERE userName=?;"
+
+                         authorities-by-username-query="
+        SELECT u.userName, r.roles
+        FROM user u, user_roles r
+        WHERE u.userName=?
+        AND u.userName=r.login;"
+
+    />
+
+    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://sleitor.stc5.ru/students"/>
+        <property name="username" value="demo"/>
+        <property name="password" value="q1w2e3r45"/>
+        <property name="maxConnectionsPerPartition" value="30"/>
+        <property name="minConnectionsPerPartition" value="10"/>
+        <property name="partitionCount" value="3"/>
+    </bean>
+
+</beans>
